@@ -1,6 +1,6 @@
 Package: com.ning.theseusswitch
 Name: 27液态开关
-Version: 1.3
+Version: 1.5
 Architecture: iphoneos-arm64e
 Description: Standalone original Theseus switch integration.
 Depends: mobilesubstrate, firmware (>= 15.0)
