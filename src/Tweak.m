@@ -48,7 +48,9 @@ static void NGSwitchHidden(UISwitch *s,SEL c,BOOL v) { if (gSWHidden) gSWHidden(
 static void NGSwitchAlpha(UISwitch *s,SEL c,CGFloat v) {
     BOOL replaced=NGHandleSwitchAlpha(s,v);
     if (!gSWAlpha) return;
-    if (replaced && [NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.apple.mobiletimer"]) {
+    if (replaced && ([NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.apple.mobiletimer"] ||
+                     [NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.tencent.mqq"] ||
+                     [NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.tencent.qq"])) {
         NGClockNativeWithoutAnimation(^{
             gSWAlpha(s,c,0);
             if ([s.layer animationForKey:@"opacity"]) [s.layer removeAnimationForKey:@"opacity"];

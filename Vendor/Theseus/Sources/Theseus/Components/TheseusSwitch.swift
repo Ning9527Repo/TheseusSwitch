@@ -94,6 +94,7 @@ public class TheseusSwitch: UIControl {
     // Opt in only from the Clock integration. Capture the nearest reusable
     // row rather than traversing the entire alarm list. Other apps stay unchanged.
     var isolatesClockCapture = false
+    var isolatesQQCapture = false
     var clockTouchActive: Bool { isPressing }
     private let contentView = UIView()
     private let trackLayer = SimpleLayer()
@@ -436,6 +437,7 @@ public class TheseusSwitch: UIControl {
 
 
     private var theseusSourceView: UIView? {
+        if isolatesQQCapture { return self }
         if isolatesClockCapture {
             var ancestor = superview
             while let view = ancestor {
@@ -477,10 +479,9 @@ public class TheseusSwitch: UIControl {
     }
 
     private var theseusContainer: UIView? {
-        // Clock: the pressed glass and shadow must live and die with this
-        // particular switch, not in a shared page-level overlay container.
-        // Other apps retain the original unclipped page-level glass host.
-        if isolatesClockCapture { return self }
+        // QQ refreshes neighboring settings switches during a single press.
+        // Keep its glass owned by this switch instead of a shared page host.
+        if isolatesClockCapture || isolatesQQCapture { return self }
         return pageSourceView?.superview
     }
 
@@ -997,7 +998,7 @@ public class TheseusSwitch: UIControl {
         onValueChanged?(newValue)
         sendActions(for: .valueChanged)
         // A synchronous host callback can already have recycled this cell.
-        guard !isolatesClockCapture || interactionGeneration == releaseGeneration else { return }
+        guard !(isolatesClockCapture || isolatesQQCapture) || interactionGeneration == releaseGeneration else { return }
 
         let finalThumbFrame = thumbFrame(x: newValue ? thumbOnX : thumbOffX)
         setThumbX(finalThumbFrame.origin.x, animated: !prefersReducedMotion)
@@ -1112,7 +1113,7 @@ public class TheseusSwitch: UIControl {
             sendActions(for: .valueChanged)
         }
         // Never start a new release on a cell that was reset during commit.
-        guard !isolatesClockCapture || interactionGeneration == releaseGeneration else { return }
+        guard !(isolatesClockCapture || isolatesQQCapture) || interactionGeneration == releaseGeneration else { return }
 
         animateRelease(to: newValue, cancelled: cancelled)
     }

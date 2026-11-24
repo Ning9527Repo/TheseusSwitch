@@ -1,0 +1,32 @@
+name: Native TheseusSwitch
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Portable source and QQ contracts
+        run: |
+          python3 tools/project.py --output evidence/source-check.json
+          python3 tests/qq-policy.py
+          python3 tests/geometry-policy.py
+          python3 tests/clock-replay-policy.py
+          python3 -m py_compile tools/*.py
+      - name: Build and verify genuine arm64e
+        run: |
+          python3 tools/build.py --arch arm64e
+          python3 tools/verify-dist.py arm64e
+      - name: Upload verified package and evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TheseusSwitch-1.1-arm64e
+          path: |
+            dist/*
+            evidence/arm64e/verification.json
+            evidence/final/arm64e.json
+          if-no-files-found: error

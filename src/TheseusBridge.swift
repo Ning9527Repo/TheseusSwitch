@@ -29,6 +29,9 @@ final class NGTheseusSwitch: UIView {
         set { toggle.isOn = newValue }
     }
     @objc(isOn) func isOn() -> Bool { toggle.isOn }
+    @objc(setIsolatesQQCapture:) func setIsolatesQQCapture(_ enabled: Bool) {
+        toggle.isolatesQQCapture = enabled
+    }
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(origin: frame.origin, size: CGSize(width: 63, height: 28)))

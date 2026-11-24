@@ -81,7 +81,9 @@ def check():
         assert '@selector('+selector+')' in hooks,selector
     assert 'dlsym' in hooks and 'MSHookMessageEx' in hooks
     assert not (ROOT/'Vendor/Glassify').exists()
-    assert not (ROOT/'.github').exists()
+    workflows = sorted((ROOT/'.github/workflows').glob('*.yml'))
+    assert len(workflows) == 1 and 'workflow_dispatch:' in workflows[0].read_text()
+    assert not re.search(r'^\s+(push|pull_request|schedule):', workflows[0].read_text(), re.M)
     return {'status':'passed','counts':counts,'vendor':vendor_manifest(),'preference_keys':[], 'always_enabled':True,
             'sources':{k:[rel(p) for p in v] for k,v in sources.items()},
             'native_build_executed':False,'device_validation_executed':False}

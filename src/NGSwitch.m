@@ -7,6 +7,10 @@ static char kNGBindingKey, kNGClockReplayKey;
 static BOOL NGIsClock(void) {
     return [NSBundle.mainBundle.bundleIdentifier isEqualToString:@"com.apple.mobiletimer"];
 }
+static BOOL NGIsQQ(void) {
+    NSString *bundle = NSBundle.mainBundle.bundleIdentifier;
+    return [bundle isEqualToString:@"com.tencent.mqq"] || [bundle isEqualToString:@"com.tencent.qq"];
+}
 #if NG_CLOCK_TRACE
 static void NGClockTrace(UISwitch *source, UIView *overlay, NSString *event) {
     if (!NGIsClock()) return;
@@ -204,7 +208,7 @@ static void NGApplySwitchState(UISwitch *source, NGSwitchBinding *binding) {
         if (binding.overlay.accessibilityLabel != label && ![binding.overlay.accessibilityLabel isEqualToString:label])
             binding.overlay.accessibilityLabel = label;
         if (binding.overlay.alpha != binding.originalAlpha) binding.overlay.alpha = binding.originalAlpha;
-        if (NGIsClock()) {
+        if (NGIsClock() || NGIsQQ()) {
             // The sibling overlay owns its visuals; never let a native opacity
             // transition briefly reveal the underlying switch during a list update.
             if (source.layer.opacity != 0) source.layer.opacity = 0;
@@ -286,6 +290,11 @@ void NGSyncSwitchGeometry(UISwitch *source) {
     if (!NSThread.isMainThread || NGIsClock()) return;
     NGSwitchBinding *binding = objc_getAssociatedObject(source, &kNGBindingKey);
     UIView *parent = source.superview;
+    if (NGIsQQ() && (!binding || binding.overlay.superview != parent) &&
+        parent && source.window && !CGRectIsEmpty(source.bounds)) {
+        NGRefreshSwitch(source);
+        return;
+    }
     if (!binding || binding.refreshing || !parent || !source.window || binding.overlay.superview != parent) return;
     binding.refreshing = YES;
     @try {
@@ -295,7 +304,19 @@ void NGSyncSwitchGeometry(UISwitch *source) {
 
 void NGRefreshSwitch(UISwitch *source) {
     if (!NSThread.isMainThread || ![source isKindOfClass:UISwitch.class]) return;
-    if (!source.superview || !source.window || CGRectIsEmpty(source.bounds)) { NGRemoveSwitch(source); return; }
+    if (!source.superview || !source.window || CGRectIsEmpty(source.bounds)) {
+        if (NGIsQQ()) {
+            NGSwitchBinding *existing = objc_getAssociatedObject(source, &kNGBindingKey);
+            if (existing) {
+                // QQ can briefly detach a row during a settings refresh. Keep its
+                // binding and animation identity; do not expose the native control.
+                existing.overlay.hidden = YES;
+            }
+        } else {
+            NGRemoveSwitch(source);
+        }
+        return;
+    }
     NGSwitchBinding *binding = objc_getAssociatedObject(source,&kNGBindingKey);
     BOOL newlyBound = !binding;
     if (!binding) {
@@ -304,6 +325,7 @@ void NGRefreshSwitch(UISwitch *source) {
         binding.originalAlpha = source.alpha; binding.originalAccessibility = source.isAccessibilityElement;
         Class component = NSClassFromString(@"NGTheseusSwitch"); if (!component) return;
         binding.overlay = [[component alloc] initWithFrame:CGRectMake(0,0,63,28)];
+        if (NGIsQQ()) ((void(*)(id,SEL,BOOL))objc_msgSend)(binding.overlay,NSSelectorFromString(@"setIsolatesQQCapture:"),YES);
         __weak NGSwitchBinding *weak = binding;
         [(id<NGSwitchComponent>)binding.overlay setOnChanged:^(BOOL value) { [weak commit:value]; }];
         binding.overlay.accessibilityIdentifier = @"NGSwitchOverlay";
@@ -328,7 +350,7 @@ void NGRefreshSwitch(UISwitch *source) {
         if (source.alpha != 0) source.alpha = 0;
         if (source.isAccessibilityElement) source.isAccessibilityElement = NO;
         binding.modifyingNative = NO;
-        if (NGIsClock()) {
+        if (NGIsClock() || NGIsQQ()) {
             if (source.layer.opacity != 0) source.layer.opacity = 0;
             if ([source.layer animationForKey:@"opacity"]) [source.layer removeAnimationForKey:@"opacity"];
             NGClockTrace(source, binding.overlay, @"layout");
