@@ -1,0 +1,1 @@
+PASS: 486 affine center model cases; setter and Clock isolation source contracts (not UIKit runtime)

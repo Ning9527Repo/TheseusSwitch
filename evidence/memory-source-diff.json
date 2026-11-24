@@ -1,0 +1,18 @@
+{
+  "baseline": "0.1.11",
+  "version": "0.1.12",
+  "changed_runtime_source_files": [
+    "Vendor/Theseus/Sources/Theseus/Rendering/TheseusTextureCache.swift",
+    "Vendor/Theseus/Sources/Theseus/Rendering/TheseusRenderer.swift",
+    "Vendor/Theseus/Sources/Theseus/Rendering/BackgroundCaptureDraw.swift",
+    "Vendor/Theseus/Sources/Theseus/Rendering/BlurKernelCalculator.swift",
+    "Vendor/Theseus/Sources/Theseus/Rendering/ViewLayerCapture.swift"
+  ],
+  "unchanged_baseline_files": 56,
+  "shader_and_switch_animation_and_native_hooks_byte_identical": true,
+  "native_build_executed": false,
+  "device_validation_executed": false,
+  "swift_frontend_parse": "passed",
+  "python_syntax": "passed",
+  "postinst_shell_syntax": "passed"
+}

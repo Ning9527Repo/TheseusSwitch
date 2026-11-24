@@ -1,0 +1,20 @@
+{
+  "base": "TheseusSwitch-0.1.12-memory-optimized-source.zip",
+  "changed": [
+    "README.md",
+    "control",
+    "packaging/config.json",
+    "src/Bridge.h",
+    "src/NGSwitch.m",
+    "src/Tweak.m"
+  ],
+  "added": [
+    "diagnostics/README.txt",
+    "diagnostics/TheseusBoundsTrace.js",
+    "evidence/geometry-policy.txt",
+    "tests/geometry-policy.py"
+  ],
+  "all_vendor_and_swift_identical": true,
+  "native_build_executed": false,
+  "device_validation_executed": false
+}

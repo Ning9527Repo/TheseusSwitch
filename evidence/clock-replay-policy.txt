@@ -1,0 +1,1 @@
+PASS: source contracts, 720 row permutations, 50 rapid-toggle model cases (not device tests)

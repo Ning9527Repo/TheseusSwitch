@@ -1,0 +1,2 @@
+PASS: production Swift cache, byte/count/per-key limits, release, stale returns, 100 purge races and 1000 concurrent puts
+PASS: renderer lifecycle source contracts (not UIKit/Metal runtime tests)

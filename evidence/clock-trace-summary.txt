@@ -1,0 +1,26 @@
+{
+  "visible_order_changes": 12,
+  "mismatched_value_samples": 12,
+  "release_animation_events": [
+    [
+      15445,
+      "S4",
+      "opacity"
+    ],
+    [
+      16529,
+      "S1",
+      "opacity"
+    ],
+    [
+      17970,
+      "S1",
+      "opacity"
+    ],
+    [
+      18327,
+      "S1",
+      "opacity"
+    ]
+  ]
+}
