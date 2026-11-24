@@ -1,8 +1,8 @@
 {
   "Vendor/Theseus/Sources/Theseus/Components/TheseusSwitch.swift": {
     "upstream_sha256": "5349ffd26f8dd122e70d4158f5bd432d07190564a7c5998323d0db1217d48e65",
-    "patched_sha256": "2d40a8a29b24ae00d9d3fb4b8022769ec08c339b3c9946105c8054a1188d8e14",
-    "reason": "Keep Clock reuse reset and replay identity guards; QQ-only local glass host and callback guard; move the fallback thumb along the existing spring until glass presents."
+    "patched_sha256": "68ed6ec55b89f23e66db3bcc6ed516458e3eef9e3b4d97cf8e1598063b0c50cb",
+    "reason": "Keep Clock reuse reset and replay identity guards; start recovery flight immediately and move fallback thumb with the spring until first frame.; QQ-only local capture host and callback guard."
   },
   "Vendor/Theseus/Sources/Theseus/Rendering/TheseusRenderer.swift": {
     "upstream_sha256": "cba7c8ff8ef15c2db1b2230980f0bd07a7e9eda45cf482765cd7eb23a7a505fa",

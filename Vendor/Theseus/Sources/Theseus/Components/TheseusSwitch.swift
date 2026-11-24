@@ -723,7 +723,7 @@ public class TheseusSwitch: UIControl {
         }
         if let thumbX = pendingThumbX {
             pendingThumbX = nil
-            if glassRevealed { setThumbX(thumbX) }
+            setThumbX(thumbX)
         }
         if pendingFlight {
             pendingFlight = false
@@ -840,9 +840,9 @@ public class TheseusSwitch: UIControl {
         glassShadowView?.layer.transform = transform
         glassShadowView?.layer.opacity = glassRevealed ? shadowOpacity : 0
         if !glassRevealed {
-            // Until this press has a presented Metal frame, move the opaque
-            // fallback knob along the same spring as the glass lens.
-            setThumbX(glassMotion.position)
+            // No successful frame (or non-Metal backend): use an opaque, draggable knob.
+            // During Clock recovery, follow the same spring until the glass is ready.
+            if clockReplayInFlight { setThumbX(glassMotion.position) }
             thumbLayer.transform = CATransform3DIdentity
             thumbLayer.opacity = 1
         }
@@ -866,11 +866,13 @@ public class TheseusSwitch: UIControl {
     }
 
     private func landGlass() {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        setThumbX(releaseTargetX)
-        CATransaction.commit()
-        clockReplayInFlight = false
+        if clockReplayInFlight {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            setThumbX(releaseTargetX)
+            CATransaction.commit()
+            clockReplayInFlight = false
+        }
         isLensVisible = false
         glassPresentationGeneration += 1
         CATransaction.begin()
@@ -1181,9 +1183,7 @@ public class TheseusSwitch: UIControl {
             pendingFlight = true
             releaseAt = pressedAt + Self.minimumLensTime
         } else {
-            // An unrevealed glass frame still shows the fallback knob. Keep it
-            // on the spring path instead of jumping to the final position.
-            if glassRevealed { setThumbX(finalThumbFrame.origin.x, animated: false) }
+            setThumbX(finalThumbFrame.origin.x, animated: false)
             let latency = usesIOS26Look ? Self.releaseLatency26 : Self.releaseLatency
             flightAt = now + latency
             releaseAt = max(now + latency, pressStartTime + Self.minimumLensTime)

@@ -12,13 +12,7 @@ assert 'animateRelease(to: value, cancelled: false)' in replay # no glass fallba
 assert 'beginPress()' not in replay
 assert 'pendingFlight = true' in replay and 'showGlass()' in replay
 assert replay.index('pendingFlight = true') < replay.index('showGlass()')
-step=swift.split('private func stepGlass(by interval: TimeInterval) {',1)[1].split('private func flightSwing',1)[0]
-assert 'if !glassRevealed {' in step and 'setThumbX(glassMotion.position)' in step
-assert step.index('if !glassRevealed {') < step.index('setThumbX(glassMotion.position)')
-release=swift.split('private func animateRelease(to newValue: Bool, cancelled: Bool) {',1)[1]
-assert 'if glassRevealed { setThumbX(finalThumbFrame.origin.x, animated: false) }' in release
-assert 'private func landGlass() {\n        CATransaction.begin()' in swift
-assert 'setThumbX(releaseTargetX)' in swift.split('private func landGlass() {',1)[1].split('private func hideGlass',1)[0]
+assert 'if clockReplayInFlight { setThumbX(glassMotion.position) }' in swift
 assert 'clockReplayInFlight = false' in swift.split('private func teardownGlass()',1)[1].split('public override func didMoveToWindow',1)[0]
 assert 'synchronizeNativeValue(value, force: true)' in replay
 assert 'NGClockResetAlarmCell(cell);\n    NGClockScheduleReplay(table);' in tweak
