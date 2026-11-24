@@ -1,6 +1,6 @@
 Package: com.ning.theseusswitch
 Name: TheseusSwitch
-Version: 1.1
+Version: 1.2
 Architecture: iphoneos-arm64e
 Description: Standalone original Theseus switch integration.
 Depends: mobilesubstrate, firmware (>= 15.0)

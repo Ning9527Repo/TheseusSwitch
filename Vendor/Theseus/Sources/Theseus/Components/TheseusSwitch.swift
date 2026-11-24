@@ -437,7 +437,6 @@ public class TheseusSwitch: UIControl {
 
 
     private var theseusSourceView: UIView? {
-        if isolatesQQCapture { return self }
         if isolatesClockCapture {
             var ancestor = superview
             while let view = ancestor {

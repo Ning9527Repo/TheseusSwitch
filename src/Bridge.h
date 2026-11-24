@@ -10,6 +10,7 @@ FOUNDATION_EXPORT void NGScheduleSwitchSync(UISwitch *source);
 FOUNDATION_EXPORT void NGClockResetAlarmCell(UIView *view);
 FOUNDATION_EXPORT void NGClockScheduleReplay(UITableView * _Nullable table);
 FOUNDATION_EXPORT BOOL NGClockHasSwitchOverlay(UISwitch *source);
+FOUNDATION_EXPORT BOOL NGQQHasSwitchOverlay(UISwitch *source);
 FOUNDATION_EXPORT BOOL NGHandleSwitchAlpha(UISwitch *source, CGFloat alpha);
 
 @protocol NGSwitchComponent <NSObject>

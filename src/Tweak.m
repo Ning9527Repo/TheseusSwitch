@@ -31,14 +31,14 @@ static void NGClockNativeWithoutAnimation(void (^changes)(void)) {
 }
 static void NGSwitchOn(UISwitch *s,SEL c,BOOL v) {
     if (gSWOn) {
-        if (NGClockHasSwitchOverlay(s)) NGClockNativeWithoutAnimation(^{ gSWOn(s,c,v); });
+        if (NGClockHasSwitchOverlay(s) || NGQQHasSwitchOverlay(s)) NGClockNativeWithoutAnimation(^{ gSWOn(s,c,v); });
         else gSWOn(s,c,v);
     }
     NGScheduleSwitchSync(s);
 }
 static void NGSwitchOnAnimated(UISwitch *s,SEL c,BOOL v,BOOL a) {
     if (gSWOnAnimated) {
-        if (NGClockHasSwitchOverlay(s)) NGClockNativeWithoutAnimation(^{ gSWOnAnimated(s,c,v,NO); });
+        if (NGClockHasSwitchOverlay(s) || NGQQHasSwitchOverlay(s)) NGClockNativeWithoutAnimation(^{ gSWOnAnimated(s,c,v,NO); });
         else gSWOnAnimated(s,c,v,a);
     }
     NGScheduleSwitchSync(s);

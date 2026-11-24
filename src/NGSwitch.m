@@ -161,7 +161,15 @@ static UITableView *NGClockBeginReplay(NGSwitchBinding *binding, BOOL value) {
         @finally { self.forwarding = NO; }
         [source sendActionsForControlEvents:UIControlEventValueChanged];
     };
-    if (NGIsClock()) {
+    if (NGIsQQ()) {
+        // QQ updates sibling rows from the valueChanged callback. Do not allow
+        // their native switches to run a second transition beneath our overlays.
+        BOOL animationsWereEnabled = [UIView areAnimationsEnabled];
+        @try {
+            [UIView setAnimationsEnabled:NO];
+            NGWithoutAnimation(commitNativeValue);
+        } @finally { [UIView setAnimationsEnabled:animationsWereEnabled]; }
+    } else if (NGIsClock()) {
         UITableView *replayTable = NGClockBeginReplay(self, value);
         // Both directions can trigger host list updates during rapid tapping.
         BOOL animationsWereEnabled = [UIView areAnimationsEnabled];
@@ -236,14 +244,20 @@ static void NGScheduleSwitchSyncAfter(UISwitch *source, NSTimeInterval delay) {
 
 void NGScheduleSwitchSync(UISwitch *source) {
     if (!NSThread.isMainThread) return;
-    if (NGIsClock()) {
-        // Clock reconfigures visible cells during the same layout transaction.
+    if (NGIsClock() || NGIsQQ()) {
+        // Clock and QQ can reconfigure visible rows within one transaction.
         // The native value must be reflected before the cell becomes visible.
         NGSwitchBinding *binding = objc_getAssociatedObject(source, &kNGBindingKey);
         if (binding && !binding.forwarding) NGApplySwitchState(source, binding);
         return;
     }
     NGScheduleSwitchSyncAfter(source, 0);
+}
+
+BOOL NGQQHasSwitchOverlay(UISwitch *source) {
+    if (!NGIsQQ()) return NO;
+    NGSwitchBinding *binding = objc_getAssociatedObject(source,&kNGBindingKey);
+    return binding.overlay.superview != nil;
 }
 
 BOOL NGClockHasSwitchOverlay(UISwitch *source) {

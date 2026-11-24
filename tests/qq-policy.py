@@ -9,7 +9,11 @@ assert 'if (NGIsQQ() && (!binding || binding.overlay.superview != parent)' in n
 assert 'existing.overlay.hidden = YES' in n
 assert 'if (NGIsClock() || NGIsQQ())' in n
 assert 'setIsolatesQQCapture:' in n and 'setIsolatesQQCapture' in b
-assert 'if isolatesQQCapture { return self }' in s
+assert 'if isolatesQQCapture { return self }' not in s
+assert 'return pageSourceView' in s
+assert 'if (NGIsClock() || NGIsQQ())' in n
+assert 'NGQQHasSwitchOverlay(s)' in t
+assert 'NGWithoutAnimation(commitNativeValue);' in n
 assert 'if isolatesClockCapture || isolatesQQCapture { return self }' in s
 assert s.count('guard !(isolatesClockCapture || isolatesQQCapture) || interactionGeneration == releaseGeneration') == 2
 assert 'com.tencent.mqq' in t and 'com.tencent.qq' in t

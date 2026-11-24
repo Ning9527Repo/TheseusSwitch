@@ -1,7 +1,7 @@
 {
   "name": "TheseusSwitch",
   "package": "com.ning.theseusswitch",
-  "version": "1.1",
+  "version": "1.2",
   "author": "Ning & Vadim Drobinin",
   "repository": "https://github.com/valzevul/Theseus",
   "deployment": "15.0",
